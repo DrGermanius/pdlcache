@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+package cache;
+
+message Key {
+  google.protobuf.StringValue key = 1;
+}
+
+message Value {
+  google.protobuf.BytesValue value = 1;
+}
+
+message KeyValue {
+  google.protobuf.StringValue key = 1;
+  google.protobuf.BytesValue value = 2;
+}
+
+service Cache {
+  rpc Get(Key) returns (Value) {}
+  rpc Set(KeyValue) returns (google.protobuf.Empty) {}
+}
+
