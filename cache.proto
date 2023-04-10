@@ -1,21 +1,20 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
-import "google/protobuf/wrappers.proto";
 
 package cache;
 
 message Key {
-  google.protobuf.StringValue key = 1;
+  string key = 1;
 }
 
 message Value {
-  google.protobuf.BytesValue value = 1;
+  bytes value = 1;
 }
 
 message KeyValue {
-  google.protobuf.StringValue key = 1;
-  google.protobuf.BytesValue value = 2;
+  string key = 1;
+  bytes value = 2;
 }
 
 service Cache {

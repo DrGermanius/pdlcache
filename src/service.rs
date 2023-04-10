@@ -1,7 +1,6 @@
 use std::sync::{Arc};
 use tokio::sync::Mutex;
 use tonic::{Request, Response, Status};
-use tonic::Code::InvalidArgument;
 use crate::cache_proto::cache_server::Cache;
 use crate::cache_proto::{Key, KeyValue, Value};
 use crate::lru::LRU;
@@ -22,34 +21,25 @@ impl Default for CacheService {
 impl Cache for CacheService {
     async fn get(&self, request: Request<Key>) -> Result<Response<Value>, Status> {
         let key = request.into_inner().key;
-        return match key {
-            None => Err(Status::invalid_argument(InvalidArgument.to_string())),
-            Some(_key) => {
-                let mut map = self.cache.lock().await;
-                match map.get(_key) {
-                    Some(v) => {
-                        Ok(Response::new(Value {
-                            value: Option::from(v),
-                        }))
-                    }
-                    None => {
-                        Ok(Response::new(Value {
-                            value: None,
-                        }))
-                    }
-                }
+        let mut map = self.cache.lock().await;
+        match map.get(key) {
+            Some(v) => {
+                Ok(Response::new(Value {
+                    value: v,
+                }))
             }
-        };
+            None => {
+                Ok(Response::new(Value {
+                    value: Vec::new(),
+                }))
+            }
+        }
     }
 
     async fn set(&self, request: Request<KeyValue>) -> Result<Response<()>, Status> {
-        // TODO avoid unwrap
         let req = request.into_inner();
-        let v = req.value.unwrap();
-        let k = req.key.unwrap();
-
         let mut map = self.cache.lock().await;
-        map.set(k, v);
+        map.set(req.key, req.value);
         Ok(Response::new(()))
     }
 }
