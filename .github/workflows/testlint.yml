@@ -51,6 +51,9 @@ jobs:
     name: Lints
     runs-on: ubuntu-latest
     steps:
+      - name: Install protoc
+        run: sudo apt update && sudo apt upgrade -y && sudo apt install -y protobuf-compiler libprotobuf-dev
+
       - name: Checkout sources
         uses: actions/checkout@v2
 
