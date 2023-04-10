@@ -7,6 +7,9 @@ jobs:
     name: Cargo Check
     runs-on: ubuntu-latest
     steps:
+      - name: Install protoc
+        run: apt update && apt upgrade -y && apt install -y protobuf-compiler libprotobuf-dev
+
       - name: Checkout sources
         uses: actions/checkout@v2
 
@@ -26,6 +29,9 @@ jobs:
     name: Cargo Tests
     runs-on: ubuntu-latest
     steps:
+      - name: Install protoc
+        run: apt update && apt upgrade -y && apt install -y protobuf-compiler libprotobuf-dev
+
       - name: Checkout sources
         uses: actions/checkout@v2
 
