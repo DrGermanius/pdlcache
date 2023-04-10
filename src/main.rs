@@ -1,9 +1,9 @@
+use crate::service::CacheService;
+use cache_proto::cache_server::CacheServer;
+use config::Config;
 use std::collections::HashMap;
 use tonic::transport::Server;
 use tonic_reflection::server::Builder;
-use cache_proto::cache_server::CacheServer;
-use config::Config;
-use crate::service::CacheService;
 
 mod lru;
 mod service;
@@ -20,9 +20,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cfg_file = Config::builder()
         .add_source(config::File::with_name("config"))
         // .add_source(config::Environment::with_prefix("APP"))
-        .build().unwrap();
+        .build()
+        .unwrap();
 
-    let cfg = cfg_file.try_deserialize::<HashMap<String, String>>().unwrap();
+    let cfg = cfg_file
+        .try_deserialize::<HashMap<String, String>>()
+        .unwrap();
     let size = cfg.get("cache_size");
     let cache_service: CacheService;
 

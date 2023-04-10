@@ -1,9 +1,9 @@
-use std::sync::{Arc};
-use tokio::sync::Mutex;
-use tonic::{Request, Response, Status};
 use crate::cache_proto::cache_server::Cache;
 use crate::cache_proto::{Key, KeyValue, Value};
 use crate::lru::LRU;
+use std::sync::Arc;
+use tokio::sync::Mutex;
+use tonic::{Request, Response, Status};
 
 pub struct CacheService {
     cache: Arc<Mutex<LRU>>,
@@ -12,7 +12,7 @@ pub struct CacheService {
 impl CacheService {
     pub(crate) fn new(n: u8) -> Self {
         CacheService {
-            cache: Arc::new(Mutex::new(LRU::new(n)))
+            cache: Arc::new(Mutex::new(LRU::new(n))),
         }
     }
 }
@@ -20,7 +20,7 @@ impl CacheService {
 impl Default for CacheService {
     fn default() -> Self {
         CacheService {
-            cache: Arc::new(Mutex::new(LRU::default()))
+            cache: Arc::new(Mutex::new(LRU::default())),
         }
     }
 }
@@ -31,16 +31,8 @@ impl Cache for CacheService {
         let key = request.into_inner().key;
         let mut cache = self.cache.lock().await;
         match cache.get(key) {
-            Some(v) => {
-                Ok(Response::new(Value {
-                    value: v,
-                }))
-            }
-            None => {
-                Ok(Response::new(Value {
-                    value: Vec::new(),
-                }))
-            }
+            Some(v) => Ok(Response::new(Value { value: v })),
+            None => Ok(Response::new(Value { value: Vec::new() })),
         }
     }
 

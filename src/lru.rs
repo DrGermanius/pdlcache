@@ -9,13 +9,21 @@ pub struct LRU {
 
 impl LRU {
     pub(crate) fn new(n: u8) -> LRU {
-        LRU { q: HashMap::new(), data: HashMap::new(), n }
+        LRU {
+            q: HashMap::new(),
+            data: HashMap::new(),
+            n,
+        }
     }
 }
 
 impl Default for LRU {
     fn default() -> Self {
-        LRU { q: HashMap::new(), data: HashMap::new(), n: 2 }
+        LRU {
+            q: HashMap::new(),
+            data: HashMap::new(),
+            n: 2,
+        }
     }
 }
 
@@ -28,7 +36,7 @@ impl LRU {
 
                 match self.data.get(key.as_str()) {
                     Some(data) => Some(data.to_owned()),
-                    None => unreachable!()
+                    None => unreachable!(),
                 }
             }
         };
@@ -58,18 +66,18 @@ impl LRU {
 }
 
 fn curr_time_nanos() -> u128 {
-    SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap().as_nanos()
+    SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_nanos()
 }
 
 fn get_oldest_key(map: &HashMap<String, u128>) -> String {
-    let key = map
-        .iter()
-        .min_by(|a, b| a.1.cmp(&b.1))
-        .map(|(k, _v)| k);
+    let key = map.iter().min_by(|a, b| a.1.cmp(&b.1)).map(|(k, _v)| k);
 
     return match key {
         None => unreachable!(),
-        Some(k) => k.to_owned()
+        Some(k) => k.to_owned(),
     };
 }
 
