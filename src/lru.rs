@@ -7,6 +7,12 @@ pub struct LRU {
     n: u8,
 }
 
+impl LRU {
+    pub(crate) fn new(n: u8) -> LRU {
+        LRU { q: HashMap::new(), data: HashMap::new(), n }
+    }
+}
+
 impl Default for LRU {
     fn default() -> Self {
         LRU { q: HashMap::new(), data: HashMap::new(), n: 2 }
