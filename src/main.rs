@@ -7,6 +7,7 @@ use tonic_reflection::server::Builder;
 
 mod lru;
 mod service;
+mod storage;
 
 mod cache_proto {
     include!("cache.rs");
@@ -36,7 +37,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         Some(s) => {
             let cache_size = s.parse::<u8>().unwrap();
-            cache_service = CacheService::new(cache_size);
+            cache_service = CacheService::new(cache_size, "./cache.json".to_string());
             println!("{} : {}", "cache size", cache_size);
         }
     }
