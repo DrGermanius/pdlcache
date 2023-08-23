@@ -1,7 +1,7 @@
-use std::collections::HashMap;
-use std::time::SystemTime;
 use serde::{Deserialize, Serialize};
 use serde_json::Error;
+use std::collections::HashMap;
+use std::time::SystemTime;
 
 #[derive(Serialize, Deserialize)]
 pub struct LRU {
@@ -79,10 +79,7 @@ fn curr_time_nanos() -> u128 {
 }
 
 fn get_oldest_key(map: &HashMap<String, u128>) -> String {
-    let key = map
-        .iter()
-        .min_by(|a, b| a.1.cmp(&b.1))
-        .map(|(k, _v)| k);
+    let key = map.iter().min_by(|a, b| a.1.cmp(&b.1)).map(|(k, _v)| k);
 
     return match key {
         None => unreachable!(),

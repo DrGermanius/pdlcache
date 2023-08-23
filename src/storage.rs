@@ -1,6 +1,6 @@
 use std::{
     fs::{File, OpenOptions},
-    io::{Read, Write, Seek},
+    io::{Read, Seek, Write},
 };
 
 pub struct Storage {
@@ -9,10 +9,7 @@ pub struct Storage {
 
 impl Storage {
     pub fn new(file_path: String) -> Storage {
-        let f: File = match OpenOptions::new()
-            .write(true)
-            .open(file_path)
-        {
+        let f: File = match OpenOptions::new().write(true).open(file_path) {
             Ok(file) => file,
             Err(error) => panic!("Problem opening the file: {:?}", error),
         };

@@ -44,11 +44,11 @@ impl Cache for CacheService {
         let req = request.into_inner();
         let mut cache = self.cache.lock().await;
         cache.set(req.key, req.value);
-        
+
         let mut storage = self.storage.lock().await;
         match storage.save(cache.to_json().unwrap().as_bytes()) {
-                Ok(_) => {}
-                Err(e) => println!("error during saving to file: {}", e)
+            Ok(_) => {}
+            Err(e) => println!("error during saving to file: {}", e),
         };
 
         Ok(Response::new(()))
