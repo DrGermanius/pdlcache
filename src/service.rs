@@ -1,6 +1,6 @@
 use crate::cache_proto::cache_server::Cache;
 use crate::cache_proto::{Key, KeyValue, Value};
-use crate::lru::LRU;
+use crate::lru::{LRU, self};
 use crate::storage::Storage;
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -13,9 +13,27 @@ pub struct CacheService {
 
 impl CacheService {
     pub(crate) fn new(n: u8, path: String) -> Self {
+        let mut storage = Storage::new(path);
+        
+        let cache = match storage.load() {
+            Ok(json) => {
+                match LRU::from_json(json)  {
+                    Ok(lru) => lru,
+                    Err(e) => {
+                        println!("error during from_json: {}", e);
+                        LRU::new(n)
+                    },
+                }
+            },
+            Err(e) => {
+                println!("error during load from storage: {}", e);
+                LRU::new(n)
+            },
+        };
+
         CacheService {
-            cache: Arc::new(Mutex::new(LRU::new(n))),
-            storage: Arc::new(Mutex::new(Storage::new(path))),
+            storage: Arc::new(Mutex::new(storage)),
+            cache: Arc::new(Mutex::new(cache)),
         }
     }
 }
@@ -49,7 +67,7 @@ impl Cache for CacheService {
         match storage.save(cache.to_json().unwrap().as_bytes()) {
             Ok(_) => {}
             Err(e) => println!("error during saving to file: {}", e),
-        };
+        }
 
         Ok(Response::new(()))
     }

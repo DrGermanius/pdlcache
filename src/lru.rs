@@ -21,6 +21,9 @@ impl LRU {
     pub fn to_json(&self) -> Result<String, Error> {
         serde_json::to_string(&self)
     }
+    pub fn from_json(s: String) -> Result<LRU, Error> {
+        serde_json::from_str(&s)
+    }
 }
 
 impl Default for LRU {
