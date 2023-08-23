@@ -9,7 +9,12 @@ pub struct Storage {
 
 impl Storage {
     pub fn new(file_path: String) -> Storage {
-        let f: File = match OpenOptions::new().write(true).read(true).open(file_path) {
+        let f: File = match OpenOptions::new()
+            .create(true)
+            .write(true)
+            .read(true)
+            .open(file_path)
+        {
             Ok(file) => file,
             Err(error) => panic!("Problem opening the file: {:?}", error),
         };
@@ -32,8 +37,8 @@ impl Storage {
 
 impl Default for Storage {
     fn default() -> Self {
-        // TODO: create file first
         let f: File = match OpenOptions::new()
+            .create(true)
             .write(true)
             .truncate(true)
             .open("./cache.json")
